@@ -21,9 +21,9 @@ class Main:
 
 
     def make_frame(self):
-        image_students = self.set_image("Estudiantes.png")
-        image_inventory = self.set_image("Inventario.png")
-        image_exit = self.set_image("Salida.png")
+        image_students = self.set_image("../images/Estudiantes.png")
+        image_inventory = self.set_image("../images/Inventario.png")
+        image_exit = self.set_image("../images/Salida.png")
 
         title_students = Label(self.master, text="Stundents", bg='#dbe0df', fg='black')
         title_inventory = Label(self.master, text="Inventory", bg='#dbe0df', fg='black')
