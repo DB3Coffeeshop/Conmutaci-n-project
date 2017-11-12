@@ -12,16 +12,13 @@ class Bank:
         self.configure()
         self.txt_student_name = Entry(self.student_frame, state="disabled")
         self.txt_student_code = Entry(self.student_frame, state="disabled")
-        self.txt_student_card = Entry(self.student_frame, state="disabled")
+        self.txt_student_card = Entry(self.student_frame)
         self.txt_student_lastname = Entry(self.student_frame, state="disabled")
         self.txt_student_career = Entry(self.student_frame, state="disabled")
         self.txt_student_phone = Entry(self.student_frame, state="disabled")
         self.make_formulary()
         self.master.mainloop()
 
-
-    def connect_database(self):
-        db = MySQLdb.connect("LocalHost", "root", "natalia1", "COMPENSAR")
 
     def configure(self):
         self.master.title("Inventory")
@@ -49,8 +46,8 @@ class Bank:
         label_student_career = Label(self.student_frame, text="Career", bg='#dbe0df', fg='black')
         label_student_phone = Label(self.student_frame, text="Phone", bg='#dbe0df', fg='black')
 
-        btn_accept = Button(self.student_frame, text="Accept", highlightbackground='#dbe0df', width=10)
-        btn_cancel = Button(self.student_frame, text="Cancel", highlightbackground='#dbe0df', width=10, command=self.button_cancel)
+        btn_accept = Button(self.student_frame, text="Accept", highlightbackground='#dbe0df', width=10, command=self.button_accept)
+        btn_cancel = Button(self.student_frame, text="Clear", highlightbackground='#dbe0df', width=10, command=self.button_clear)
         btn_add = Button(self.student_frame, text="Add", highlightbackground='#dbe0df', width=10, command=self.button_add)
 
 
@@ -66,24 +63,79 @@ class Bank:
         btn_cancel.place(relx=0.77, rely=0.72)
 
 
-    def button_cancel(self):
-        self.txt_student_card['state'] = 'disabled'
-        self.txt_student_code['state'] = 'disabled'
-        self.txt_student_name['state'] = 'disabled'
-        self.txt_student_lastname['state'] = 'disabled'
-        self.txt_student_career['state'] = 'disabled'
-        self.txt_student_phone['state'] = 'disabled'
-
-     
-
-    def button_add(self):
+    def button_clear(self):
         self.txt_student_card['state'] = 'normal'
         self.txt_student_code['state'] = 'disabled'
         self.txt_student_name['state'] = 'disabled'
         self.txt_student_lastname['state'] = 'disabled'
         self.txt_student_career['state'] = 'disabled'
         self.txt_student_phone['state'] = 'disabled'
+        self.clean()
 
+     
+    def button_add(self):
+        if self.txt_student_card.get() != "":
+            self.txt_student_card['state'] = 'disabled'
+            self.txt_student_code['state'] = 'normal'
+            self.txt_student_name['state'] = 'normal'
+            self.txt_student_lastname['state'] = 'normal'
+            self.txt_student_career['state'] = 'normal'
+            self.txt_student_phone['state'] = 'normal'
+        
+        else:
+            tkMessageBox.showwarning("Error", "Please scan the card first")
+
+
+    def button_accept(self):
+        card_code = self.txt_student_card.get()
+        student_code = self.txt_student_code.get()
+        name = self.txt_student_name.get()
+        last_name = self.txt_student_lastname.get()
+        phone = self.txt_student_phone.get()
+        career = self.txt_student_career.get()
+
+        if card_code != "" and student_code != "" and name != "" and last_name != "" and phone != "" and career != "":
+            self.add_student(name, last_name, phone, career, card_code, student_code)
+
+        else:
+            tkMessageBox.showwarning("Error", "Please fill al the places")
+
+
+    def clean(self):
+        self.txt_student_card.delete(0, END)
+        self.txt_student_career.delete(0, END)
+        self.txt_student_code.delete(0, END)
+        self.txt_student_lastname.delete(0, END)
+        self.txt_student_name.delete(0, END)
+        self.txt_student_phone.delete(0, END)
+
+
+    def connect_database(self):
+        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "GESTION")
+        data_base.autocommit(True)
+        cursor = data_base.cursor()
+        return (data_base, cursor)
+
+    
+    def add_student(self, name_student, last_name_student, phone_student, career_student, card_code_student, code_student):
+        cursor = self.connect_database()[1]
+        db = self.connect_database()[0]
+        sql = "INSERT INTO Student(card_code, student_code, name, last_name, phone, career) VALUES(%d, %d, '%s', '%s', %d, '%s')" % (int(card_code_student), int(code_student), str(name_student), str(last_name_student), int(phone_student), str(career_student))
+
+        try:
+            cursor.execute(sql)
+            tkMessageBox.showinfo("Success", "Student %s has been added" % (name_student))
+            self.clean()
+
+        except MySQLdb.IntegrityError:
+            tkMessageBox.showerror("Duplicate code", "Student already exists")
+            db.rollback()
+
+        except:
+            tkMessageBox.showerror("Error", "Unexpected value error")
+            db.rollback()
+
+        db.close()
 
 
 
