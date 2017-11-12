@@ -63,8 +63,3 @@ class Main:
             self.master.destroy()
         else:
             pass
-        
-
-if __name__ == "__main__":
-    print "adsasd"
-    main = Main()

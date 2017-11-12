@@ -1,8 +1,7 @@
-from tkinter import *
+from Tkinter import *
 import MySQLdb
 from PIL import Image, ImageTk
 import tkMessageBox
-import getpass
 
 class Bank:
 
@@ -37,7 +36,7 @@ class Bank:
         self.txt_student_career.place(relx=0.25, rely=0.5, width=120)
         self.txt_student_phone.place(relx=0.75 , rely=0.5, width=120)
 
-        label_frame = Label(self.master, text="Loans", font=("Helvetica", 19), bg='#dbe0df', fg='black')
+        label_frame = Label(self.master, text="Students", font=("Helvetica", 19), bg='#dbe0df', fg='black')
         label_frame.pack(pady=30)
         label_card_code = Label(self.student_frame, text="Card code", bg='#dbe0df', fg='black')
         label_student_code = Label(self.student_frame, text="Stundent code", bg='#dbe0df', fg='black')
@@ -49,6 +48,8 @@ class Bank:
         btn_accept = Button(self.student_frame, text="Accept", highlightbackground='#dbe0df', width=10, command=self.button_accept)
         btn_cancel = Button(self.student_frame, text="Clear", highlightbackground='#dbe0df', width=10, command=self.button_clear)
         btn_add = Button(self.student_frame, text="Add", highlightbackground='#dbe0df', width=10, command=self.button_add)
+        btn_loans = Button(self.master, text="Loans", highlightbackground='#dbe0df', width=10, command=self.loans)
+        btn_exit = Button(self.master, text="Exit", highlightbackground='#dbe0df', width=10, command=self.go_back)
 
 
         label_card_code.place(relx=0.05, rely=0.1)
@@ -61,16 +62,18 @@ class Bank:
         btn_add.place(relx=0.053, rely=0.72)
         btn_accept.place(relx=0.42, rely=0.72)
         btn_cancel.place(relx=0.77, rely=0.72)
+        btn_loans.place(relx=0.85, rely=0.27)
+        btn_exit.place(relx=0.85, rely=0.4)
 
 
     def button_clear(self):
+        self.clean()
         self.txt_student_card['state'] = 'normal'
         self.txt_student_code['state'] = 'disabled'
         self.txt_student_name['state'] = 'disabled'
         self.txt_student_lastname['state'] = 'disabled'
         self.txt_student_career['state'] = 'disabled'
         self.txt_student_phone['state'] = 'disabled'
-        self.clean()
 
      
     def button_add(self):
@@ -99,6 +102,16 @@ class Bank:
 
         else:
             tkMessageBox.showwarning("Error", "Please fill al the places")
+
+
+    def go_back(self):
+        self.master.destroy()
+        from frm_options import Main
+        main = Main()
+        
+    
+    def loans(self):
+        pass
 
 
     def clean(self):
@@ -136,9 +149,6 @@ class Bank:
             db.rollback()
 
         db.close()
-
-
-
 
 if __name__ == "__main__":
     b = Bank()
