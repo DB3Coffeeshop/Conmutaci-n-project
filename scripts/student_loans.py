@@ -18,8 +18,7 @@ class Loans:
         self.master.title("Loans")
         title = Label(self.master, text="%s" % (self.student_name), bg='#dbe0df', font=("Cursive", 19))
         title.pack()
-        #self.article_frame.place(relx=0.75, rely=0.18)
-        self.article_frame.pack(side=RIGHT, padx=30, pady=10)
+        self.article_frame.pack(side=RIGHT, padx=30)
         self.loans_frame.pack(side=LEFT, padx=30)
         self.master.geometry("900x500")
         self.master.resizable(0,0)
@@ -34,17 +33,22 @@ class Loans:
 
 
     def make_list_articles(self):
-        title = Label(self.article_frame, text="Articles", bg='#dbe0df')
         self.list = Listbox(self.article_frame, selectborderwidth=5)
+
+        title = Label(self.article_frame, text="Articles", bg='#dbe0df')
         btn_aceptar = Button(self.article_frame, text="Add", highlightbackground='#dbe0df')
+        lbl_quantity = Label(self.article_frame, text="quantity", font=("Cursive", 10), bg='#dbe0df')
+        txt_quantity = Entry(self.article_frame, bd=5, text="Quantity here")
+
         btn_aceptar.pack(side=BOTTOM)
+        txt_quantity.pack(side=BOTTOM, pady=10)
+        lbl_quantity.pack(side=BOTTOM, pady=10)
         title.pack()
 
         db = self.connect()
         cursor = db.cursor()
         sql = "SELECT name_product FROM Product"
         cursor.execute(sql)
-
         data = cursor.fetchall()
 
         for article in data:
@@ -59,8 +63,22 @@ class Loans:
         self.list_new_loans = Listbox(self.loans_frame, selectborderwidth=5)
         self.list_loans.pack(side=LEFT, padx=30)
         self.list_new_loans.pack(side=RIGHT, padx=30, pady=30)
-        self.list_new_loans.insert(0, "saad")
-        self.list_loans.insert(0,"adsads")
+
+        btn_accept = Button(self.master, text="Accept", highlightbackground='#dbe0df', width=10)
+        btn_cancel = Button(self.master, text="Cancel", highlightbackground='#dbe0df', width=10)
+        btn_exit = Button(self.master, text="exit", highlightbackground='#dbe0df', width=10)
+
+        lbl_current_loans = Label(self.master, text="Student Loans", bg='#dbe0df')
+        lbl_loans = Label(self.master, text="Current loans", bg='#dbe0df')
+
+        lbl_current_loans.place(relx=0.12, rely=0.2)
+        lbl_loans.place(relx=0.41, rely=0.2)
+        btn_accept.place(relx=0.07, rely=0.9)
+        btn_cancel.place(relx=0.27, rely=0.9)
+        btn_exit.place(relx=0.47, rely=0.9)
+
+
+
 
 
 
