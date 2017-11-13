@@ -3,7 +3,7 @@ import MySQLdb
 from PIL import Image, ImageTk
 import tkMessageBox
 
-class Bank:
+class Register:
 
     def __init__(self):
         self.master = Tk()
@@ -20,7 +20,7 @@ class Bank:
 
 
     def configure(self):
-        self.master.title("Inventory")
+        self.master.title("Students")
         self.master.geometry("900x550")
         self.master.resizable(0,0)
         self.master.configure(background='#dbe0df')
@@ -111,7 +111,9 @@ class Bank:
         
     
     def loans(self):
-        pass
+        from student_loans import Loans
+        name = "%s %s" % (self.txt_student_name.get(), self.txt_student_lastname.get())
+        loans = Loans(name)
 
 
     def clean(self):
@@ -151,4 +153,4 @@ class Bank:
         db.close()
 
 if __name__ == "__main__":
-    b = Bank()
+    b = Register()

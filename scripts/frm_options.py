@@ -1,5 +1,5 @@
 from Tkinter import *
-from loans import Bank
+from loans import Register
 from PIL import Image, ImageTk
 import tkMessageBox
 
@@ -53,7 +53,7 @@ class Main:
 
     def open_students_frame(self):
         self.master.destroy()
-        students_frame = Bank()
+        students_frame = Register()
 
 
     def go_back(self):
