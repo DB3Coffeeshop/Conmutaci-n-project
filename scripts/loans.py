@@ -1,6 +1,8 @@
 from Tkinter import *
 import MySQLdb
 from PIL import Image, ImageTk
+from student_loans import Loans
+from student import Student
 import tkMessageBox
 
 class Register:
@@ -111,9 +113,28 @@ class Register:
         
     
     def loans(self):
-        from student_loans import Loans
-        name = "%s %s" % (self.txt_student_name.get(), self.txt_student_lastname.get())
-        loans = Loans(name)
+        if self.txt_student_card.get() != "":
+            card = self.txt_student_card.get()
+
+            db = self.connect_database()
+            cursor = db.cursor()
+            sql = "SELECT * FROM Student WHERE card_code=%d" % (int(card))
+            cursor.execute(sql)
+
+            try:
+                data = cursor.fetchall()[0]
+            except:
+                data = []
+
+
+            if len(data) > 0:
+                student = Student(data[2], data[3], data[4], data[1], data[0], data[5])
+                loans = Loans(student)
+            else:
+                tkMessageBox.showinfo("Not found", "Student with card %s doesn't exists" % (card))
+
+        else:
+            tkMessageBox.showerror("Error", "Please scan the card")
 
 
     def clean(self):
@@ -129,12 +150,12 @@ class Register:
         data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "GESTION")
         data_base.autocommit(True)
         cursor = data_base.cursor()
-        return (data_base, cursor)
+        return data_base
 
     
     def add_student(self, name_student, last_name_student, phone_student, career_student, card_code_student, code_student):
-        cursor = self.connect_database()[1]
-        db = self.connect_database()[0]
+        db = self.connect_database()
+        cursor = db.cursor()
         sql = "INSERT INTO Student(card_code, student_code, name, last_name, phone, career) VALUES(%d, %d, '%s', '%s', %d, '%s')" % (int(card_code_student), int(code_student), str(name_student), str(last_name_student), int(phone_student), str(career_student))
 
         try:
