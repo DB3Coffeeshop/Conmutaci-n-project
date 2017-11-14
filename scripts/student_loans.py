@@ -28,7 +28,7 @@ class Loans:
 
 
     def connect(self):
-        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "GESTION")
+        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans")
         return data_base
 
 
@@ -47,7 +47,7 @@ class Loans:
 
         db = self.connect()
         cursor = db.cursor()
-        sql = "SELECT name_product FROM Product"
+        sql = "SELECT name FROM Material"
         cursor.execute(sql)
         data = cursor.fetchall()
 

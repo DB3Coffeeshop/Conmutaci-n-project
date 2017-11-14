@@ -118,7 +118,7 @@ class Register:
 
             db = self.connect_database()
             cursor = db.cursor()
-            sql = "SELECT * FROM Student WHERE card_code=%d" % (int(card))
+            sql = "SELECT * FROM Students WHERE card_code=%d" % (int(card))
             cursor.execute(sql)
 
             try:
@@ -147,7 +147,7 @@ class Register:
 
 
     def connect_database(self):
-        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "GESTION")
+        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans")
         data_base.autocommit(True)
         cursor = data_base.cursor()
         return data_base
@@ -156,7 +156,7 @@ class Register:
     def add_student(self, name_student, last_name_student, phone_student, career_student, card_code_student, code_student):
         db = self.connect_database()
         cursor = db.cursor()
-        sql = "INSERT INTO Student(card_code, student_code, name, last_name, phone, career) VALUES(%d, %d, '%s', '%s', %d, '%s')" % (int(card_code_student), int(code_student), str(name_student), str(last_name_student), int(phone_student), str(career_student))
+        sql = "INSERT INTO Students(student_code,card_code, name, last_name, mail, career) VALUES(%d, %d, '%s', '%s', %d, '%s')" % (int(code_student),int(card_code_student) , str(name_student), str(last_name_student), int(phone_student), str(career_student))
 
         try:
             cursor.execute(sql)
