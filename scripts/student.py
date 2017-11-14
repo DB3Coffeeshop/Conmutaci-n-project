@@ -7,3 +7,11 @@ class Student:
         self.stundent_code = stundent_code
         self.card_code = card_code
         self.stundent_carrer = stundent_carrer
+
+    
+    def __str__(self):
+        return "'%s', '%s', '%s', '%s', '%s', '%s'" % (self.stundent_code, self.card_code, self.name, self.last_name, self.student_mail, self.stundent_carrer) 
+
+
+a = Student("312123", "213123", "Andres", "Pulgarin", "pulga1021@outlook.es", "sistemas")
+print a

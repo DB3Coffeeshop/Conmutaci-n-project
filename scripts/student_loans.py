@@ -32,15 +32,20 @@ class Loans:
         return data_base
 
 
+    def fill_list(self, list_articles):
+        for article in list_articles:
+            self.list.insert(END, article)
+
+
     def make_list_articles(self):
         self.list = Listbox(self.article_frame, selectborderwidth=5)
 
         title = Label(self.article_frame, text="Articles", bg='#dbe0df')
-        btn_aceptar = Button(self.article_frame, text="Add", highlightbackground='#dbe0df')
+        btn_accept = Button(self.article_frame, text="Add", highlightbackground='#dbe0df', command=self.add_button)
         lbl_quantity = Label(self.article_frame, text="quantity", font=("Cursive", 10), bg='#dbe0df')
         txt_quantity = Entry(self.article_frame, bd=5, text="Quantity here")
 
-        btn_aceptar.pack(side=BOTTOM)
+        btn_accept.pack(side=BOTTOM)
         txt_quantity.pack(side=BOTTOM, pady=10)
         lbl_quantity.pack(side=BOTTOM, pady=10)
         title.pack()
@@ -51,8 +56,7 @@ class Loans:
         cursor.execute(sql)
         data = cursor.fetchall()
 
-        for article in data:
-            self.list.insert(END, article)
+        self.fill_list(data)
 
         self.list.pack()
         db.close()
@@ -76,6 +80,17 @@ class Loans:
         btn_accept.place(relx=0.07, rely=0.9)
         btn_cancel.place(relx=0.27, rely=0.9)
         btn_exit.place(relx=0.47, rely=0.9)
+
+
+    def get_item(self, list_box):
+        return (list_box.get(ACTIVE), list_box.index(ACTIVE))
+
+
+    def add_button(self):
+        data = self.get_item(self.list)[0]
+
+        self.list_loans.insert(END, data)
+        self.list.delete(self.get_item(self.list)[1])
 
 
 if __name__ == "__main__":

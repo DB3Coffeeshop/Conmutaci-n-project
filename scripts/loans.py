@@ -118,7 +118,7 @@ class Register:
 
             db = self.connect_database()
             cursor = db.cursor()
-            sql = "SELECT * FROM Students WHERE card_code=%d" % (int(card))
+            sql = "SELECT * FROM Students WHERE card_code=%s" % (str(card))
             cursor.execute(sql)
 
             try:
@@ -158,7 +158,6 @@ class Register:
     def add_student(self, name_student, last_name_student, mail_student, career_student, card_code_student, code_student):
         db = self.connect_database()
         cursor = db.cursor()
-        print mail_student
         sql = "INSERT INTO Students(student_code,card_code, name, last_name, mail, career) VALUES(%d, '%s', '%s', '%s', '%s', '%s')" % (int(code_student), str(card_code_student), str(name_student), str(last_name_student), str(mail_student), str(career_student))
 
         try:
