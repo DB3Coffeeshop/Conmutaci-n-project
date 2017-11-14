@@ -129,6 +129,8 @@ class Register:
 
             if len(data) > 0:
                 student = Student(data[2], data[3], data[4], data[1], data[0], data[5])
+                self.master.destroy()
+                db.close()
                 loans = Loans(student)
             else:
                 tkMessageBox.showinfo("Not found", "Student with card %s doesn't exists" % (card))
