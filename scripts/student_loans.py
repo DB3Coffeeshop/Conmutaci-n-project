@@ -47,7 +47,7 @@ class Loans:
 
         db = self.connect()
         cursor = db.cursor()
-        sql = "SELECT name FROM Material"
+        sql = "SELECT name FROM Materials"
         cursor.execute(sql)
         data = cursor.fetchall()
 
@@ -79,5 +79,5 @@ class Loans:
 
 
 if __name__ == "__main__":
-    andres = Student("Andres", "Pulgarin", 12313, 123231, 321321, "sistemas")
+    andres = Student("Andres", "Pulgarin", 12313, 123231, "pulga", "sistemas")
     l = Loans(andres)

@@ -16,7 +16,7 @@ class Register:
         self.txt_student_card = Entry(self.student_frame)
         self.txt_student_lastname = Entry(self.student_frame, state="disabled")
         self.txt_student_career = Entry(self.student_frame, state="disabled")
-        self.txt_student_phone = Entry(self.student_frame, state="disabled")
+        self.txt_student_mail = Entry(self.student_frame, state="disabled")
         self.make_formulary()
         self.master.mainloop()
 
@@ -36,7 +36,7 @@ class Register:
         self.txt_student_name.place(relx=0.25, rely=0.3, width=120)
         self.txt_student_lastname.place(relx=0.75, rely=0.3, width=120)
         self.txt_student_career.place(relx=0.25, rely=0.5, width=120)
-        self.txt_student_phone.place(relx=0.75 , rely=0.5, width=120)
+        self.txt_student_mail.place(relx=0.75 , rely=0.5, width=120)
 
         label_frame = Label(self.master, text="Students", font=("Helvetica", 19), bg='#dbe0df', fg='black')
         label_frame.pack(pady=30)
@@ -45,7 +45,7 @@ class Register:
         label_student_name = Label(self.student_frame, text="Name", bg='#dbe0df', fg='black')
         label_student_lastname = Label(self.student_frame, text="Last name", bg='#dbe0df', fg='black')
         label_student_career = Label(self.student_frame, text="Career", bg='#dbe0df', fg='black')
-        label_student_phone = Label(self.student_frame, text="Phone", bg='#dbe0df', fg='black')
+        label_student_mail = Label(self.student_frame, text="Mail", bg='#dbe0df', fg='black')
 
         btn_accept = Button(self.student_frame, text="Accept", highlightbackground='#dbe0df', width=10, command=self.button_accept)
         btn_cancel = Button(self.student_frame, text="Clear", highlightbackground='#dbe0df', width=10, command=self.button_clear)
@@ -59,7 +59,7 @@ class Register:
         label_student_name.place(relx=0.05, rely=0.3)
         label_student_lastname.place(relx=0.55, rely=0.3)
         label_student_career.place(relx=0.05, rely=0.5)
-        label_student_phone.place(relx=0.55, rely=0.5)
+        label_student_mail.place(relx=0.55, rely=0.5)
 
         btn_add.place(relx=0.053, rely=0.72)
         btn_accept.place(relx=0.42, rely=0.72)
@@ -75,7 +75,7 @@ class Register:
         self.txt_student_name['state'] = 'disabled'
         self.txt_student_lastname['state'] = 'disabled'
         self.txt_student_career['state'] = 'disabled'
-        self.txt_student_phone['state'] = 'disabled'
+        self.txt_student_mail['state'] = 'disabled'
 
      
     def button_add(self):
@@ -85,7 +85,7 @@ class Register:
             self.txt_student_name['state'] = 'normal'
             self.txt_student_lastname['state'] = 'normal'
             self.txt_student_career['state'] = 'normal'
-            self.txt_student_phone['state'] = 'normal'
+            self.txt_student_mail['state'] = 'normal'
         
         else:
             tkMessageBox.showwarning("Error", "Please scan the card first")
@@ -96,11 +96,11 @@ class Register:
         student_code = self.txt_student_code.get()
         name = self.txt_student_name.get()
         last_name = self.txt_student_lastname.get()
-        phone = self.txt_student_phone.get()
+        mail = self.txt_student_mail.get()
         career = self.txt_student_career.get()
 
-        if card_code != "" and student_code != "" and name != "" and last_name != "" and phone != "" and career != "":
-            self.add_student(name, last_name, phone, career, card_code, student_code)
+        if card_code != "" and student_code != "" and name != "" and last_name != "" and mail != "" and career != "":
+            self.add_student(name, last_name, mail, career, card_code, student_code)
 
         else:
             tkMessageBox.showwarning("Error", "Please fill al the places")
@@ -145,7 +145,7 @@ class Register:
         self.txt_student_code.delete(0, END)
         self.txt_student_lastname.delete(0, END)
         self.txt_student_name.delete(0, END)
-        self.txt_student_phone.delete(0, END)
+        self.txt_student_mail.delete(0, END)
 
 
     def connect_database(self):
@@ -155,10 +155,11 @@ class Register:
         return data_base
 
     
-    def add_student(self, name_student, last_name_student, phone_student, career_student, card_code_student, code_student):
+    def add_student(self, name_student, last_name_student, mail_student, career_student, card_code_student, code_student):
         db = self.connect_database()
         cursor = db.cursor()
-        sql = "INSERT INTO Students(student_code,card_code, name, last_name, mail, career) VALUES(%d, %d, '%s', '%s', %d, '%s')" % (int(code_student),int(card_code_student) , str(name_student), str(last_name_student), int(phone_student), str(career_student))
+        print mail_student
+        sql = "INSERT INTO Students(student_code,card_code, name, last_name, mail, career) VALUES(%d, '%s', '%s', '%s', '%s', '%s')" % (int(code_student), str(card_code_student), str(name_student), str(last_name_student), str(mail_student), str(career_student))
 
         try:
             cursor.execute(sql)
@@ -166,7 +167,7 @@ class Register:
             self.clean()
 
         except MySQLdb.IntegrityError:
-            tkMessageBox.showerror("Duplicate code", "Student already exists")
+            tkMessageBox.showerror("Duplicate code", "Student with code %s already exists" % (card_code_student))
             db.rollback()
 
         except:
