@@ -1,11 +1,11 @@
 from Tkinter import *
 import MySQLdb
-
+from student import Student
 
 class Loans:
 
-    def __init__(self, student_name):
-        self.student_name = student_name
+    def __init__(self, student):
+        self.student = student
         self.master = Tk()
         self.article_frame = Frame(self.master, bd=5, relief="groove", width=400, height=400)
         self.loans_frame = Frame(self.master, bd=5, relief="groove", width=200, height=200)
@@ -16,7 +16,7 @@ class Loans:
 
     def configure(self):
         self.master.title("Loans")
-        title = Label(self.master, text="%s" % (self.student_name), bg='#dbe0df', font=("Cursive", 19))
+        title = Label(self.master, text="%s %s" % (self.student.name, self.student.last_name), bg='#dbe0df', font=("Cursive", 19))
         title.pack()
         self.article_frame.pack(side=RIGHT, padx=30)
         self.loans_frame.pack(side=LEFT, padx=30)
@@ -78,9 +78,6 @@ class Loans:
         btn_exit.place(relx=0.47, rely=0.9)
 
 
-
-
-
-
 if __name__ == "__main__":
-    l = Loans("Andres")
+    andres = Student("Andres", "Pulgarin", 12313, 123231, 321321, "sistemas")
+    l = Loans(andres)

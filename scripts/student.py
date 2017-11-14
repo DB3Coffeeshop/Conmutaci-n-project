@@ -1,4 +1,4 @@
-class Stundent:
+class Student:
 
     def __init__(self, name, last_name, stundent_phone, stundent_code, card_code, stundent_carrer):
         self.name = name
