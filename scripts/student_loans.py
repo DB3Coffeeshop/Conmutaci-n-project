@@ -1,10 +1,14 @@
 from Tkinter import *
 import MySQLdb
 from student import Student
+import tkMessageBox
+from article import Article
+from datetime import date
 
 class Loans:
 
     def __init__(self, student):
+        self.list_articles = []
         self.student = student
         self.master = Tk()
         self.article_frame = Frame(self.master, bd=5, relief="groove", width=400, height=400)
@@ -13,6 +17,7 @@ class Loans:
         self.make_list_articles()
         self.make_loans_frame()
         self.master.mainloop()
+
 
     def configure(self):
         self.master.title("Loans")
@@ -43,22 +48,31 @@ class Loans:
         title = Label(self.article_frame, text="Articles", bg='#dbe0df')
         btn_accept = Button(self.article_frame, text="Add", highlightbackground='#dbe0df', command=self.add_button)
         lbl_quantity = Label(self.article_frame, text="quantity", font=("Cursive", 10), bg='#dbe0df')
-        txt_quantity = Entry(self.article_frame, bd=5, text="Quantity here")
+        self.txt_quantity = Entry(self.article_frame, bd=5, text="Quantity here")
 
         btn_accept.pack(side=BOTTOM)
+<<<<<<< HEAD
         txt_quantity.pack(side=BOTTOM, pady=10)
+=======
+        self.txt_quantity.pack(side=BOTTOM, pady=10)
+>>>>>>> master1
         lbl_quantity.pack(side=BOTTOM, pady=10)
         title.pack()
 
         db = self.connect()
         cursor = db.cursor()
+<<<<<<< HEAD
         sql = "SELECT name FROM Materials"
+=======
+        sql = "SELECT name FROM Materials WHERE stock>0"
+>>>>>>> master1
         cursor.execute(sql)
         data = cursor.fetchall()
 
         self.fill_list(data)
 
         self.list.pack()
+
         db.close()
 
 
@@ -87,10 +101,51 @@ class Loans:
 
 
     def add_button(self):
+<<<<<<< HEAD
         data = self.get_item(self.list)[0]
 
         self.list_loans.insert(END, data)
         self.list.delete(self.get_item(self.list)[1])
+=======
+        if self.txt_quantity.get() != "" and int(self.txt_quantity.get()) > 0:
+            db = self.connect()
+            cursor = db.cursor()
+            sql = "SELECT * FROM Materials WHERE name='%s'" % (self.get_item(self.list)[0])
+            cursor.execute(sql)
+            data_sql = cursor.fetchall()[0]
+
+            if int(data_sql[4]) > int(self.txt_quantity.get()):
+                data = self.get_item(self.list)[0]
+                self.list_new_loans.insert(END, data)
+                self.list.delete(self.get_item(self.list)[1])
+                article = Article(int(data_sql[0]), data_sql[1], data_sql[2], data_sql[3], int(data_sql[4]))
+                self.list_articles.append((article, self.txt_quantity.get()))
+                self.txt_quantity.delete(0, END)
+
+            else:
+                tkMessageBox.showerror("No stock", "Error, article stock: %d" % (int(data_sql[4])))
+        else:
+            tkMessageBox.showerror("Error", "Please enter a positive integer")
+
+
+    def fill_list_loans(self):
+        self.list_new_loans.delete(0, END)
+
+        for article in self.list_articles:
+            self.list_loans.insert(END, article.name_article)
+
+
+    def accept_button(self):
+
+        if len(self.list_articles) > 0:
+            db = self.connect()
+            cursor = db.cursor()
+
+            for article in self.list_articles:
+                sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES((SELECT student_code FROM Students WHERE student_code=%d), (SELECT id_Materials FROM Materials WHERE id_Materials=%d), %d, '%s', %d)" % (self.student.stundent_code, article[0].id_article, article[1], date.today(), 1)
+                
+
+>>>>>>> master1
 
 
 if __name__ == "__main__":
