@@ -8,5 +8,5 @@ class Article:
         self.stock = stock
 
 
-    def sql_add(self):
-        return "%d, '%s', '%s', '%s', '%s', %d" % (self.id_article, self.category_first, self.category_second, self.name_article, self.stock)
+    def __str__(self):
+        return "%d, '%s', '%s', '%s', %d" % (self.id_article, self.category_first, self.category_second, self.name_article, self.stock)
