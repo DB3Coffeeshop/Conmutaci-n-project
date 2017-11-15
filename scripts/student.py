@@ -10,8 +10,4 @@ class Student:
 
     
     def __str__(self):
-        return "'%s', '%s', '%s', '%s', '%s', '%s'" % (self.stundent_code, self.card_code, self.name, self.last_name, self.student_mail, self.stundent_carrer) 
-
-
-a = Student("312123", "213123", "Andres", "Pulgarin", "pulga1021@outlook.es", "sistemas")
-print a
+        return "%d, '%s', '%s', '%s', '%s', '%s'" % (self.stundent_code, self.card_code, self.name, self.last_name, self.student_mail, self.stundent_carrer) 
