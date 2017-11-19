@@ -34,6 +34,7 @@ class Loans:
 
     def connect(self):
         data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans")
+        data_base.autocommit(True)
         return data_base
 
 
@@ -74,7 +75,7 @@ class Loans:
         self.list_loans.pack(side=LEFT, padx=30)
         self.list_new_loans.pack(side=RIGHT, padx=30, pady=30)
 
-        btn_accept = Button(self.master, text="Accept", highlightbackground='#dbe0df', width=10)
+        btn_accept = Button(self.master, text="Accept", highlightbackground='#dbe0df', width=10, command=self.accept_button)
         btn_cancel = Button(self.master, text="Cancel", highlightbackground='#dbe0df', width=10)
         btn_exit = Button(self.master, text="exit", highlightbackground='#dbe0df', width=10)
 
@@ -118,18 +119,31 @@ class Loans:
         self.list_new_loans.delete(0, END)
 
         for article in self.list_articles:
-            self.list_loans.insert(END, article.name_article)
+            self.list_loans.insert(END, article[0].name_article)
 
 
     def accept_button(self):
-
         if len(self.list_articles) > 0:
             db = self.connect()
             cursor = db.cursor()
 
             for article in self.list_articles:
-                sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES((SELECT student_code FROM Students WHERE student_code=%d), (SELECT id_Materials FROM Materials WHERE id_Materials=%d), %d, '%s', %d)" % (self.student.stundent_code, article[0].id_article, article[1], date.today(), 1)
-                
+                sql_student = "SELECT student_code FROM Students WHERE student_code=%d" % (int(self.student.stundent_code))
+                cursor.execute(sql_student)
+                student_code = cursor.fetchall()[0][0]
+                sql_article = "SELECT id_Materials FROM Materials WHERE id_Materials=%d" % (int(article[0].id_article))
+                cursor.execute(sql_article)
+                id_material = cursor.fetchall()[0][0]
+
+                try:
+                    sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES(%d, %d, %d, '%s', %d)" % (student_code, id_material, int(article[1]), date.today(), 1)
+                    cursor.execute(sql)
+
+                except:
+                    tkMessageBox.showerror("Error", "Unexpected error")
+
+        self.fill_list_loans()
+        db.close()
 
 
 

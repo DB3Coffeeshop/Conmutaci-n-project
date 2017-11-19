@@ -115,10 +115,13 @@ class Register:
     def loans(self):
         if self.txt_student_card.get() != "":
             card = self.txt_student_card.get()
-
             db = self.connect_database()
             cursor = db.cursor()
+<<<<<<< HEAD
             sql = "SELECT * FROM Students WHERE card_code=%s" % (str(card))
+=======
+            sql = "SELECT * FROM Students WHERE card_code='%s'" % (card)
+>>>>>>> master1
             cursor.execute(sql)
 
             try:
@@ -126,9 +129,8 @@ class Register:
             except:
                 data = []
 
-
             if len(data) > 0:
-                student = Student(data[2], data[3], data[4], data[1], data[0], data[5])
+                student = Student(data[2], data[3], data[4], data[0], data[1], data[5])
                 self.master.destroy()
                 db.close()
                 loans = Loans(student)
