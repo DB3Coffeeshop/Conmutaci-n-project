@@ -117,11 +117,7 @@ class Register:
             card = self.txt_student_card.get()
             db = self.connect_database()
             cursor = db.cursor()
-<<<<<<< HEAD
             sql = "SELECT * FROM Students WHERE card_code=%s" % (str(card))
-=======
-            sql = "SELECT * FROM Students WHERE card_code='%s'" % (card)
->>>>>>> master1
             cursor.execute(sql)
 
             try:
