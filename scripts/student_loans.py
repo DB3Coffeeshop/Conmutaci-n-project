@@ -140,24 +140,15 @@ class Loans:
                 cursor.execute(sql_article)
                 id_material = cursor.fetchall()[0][0]
 
-    """
-    def combobox(self):
-        #ComboBox
-        self.category_first_Cbox = Combobox(self.article_frame, state="readonly")
-        self.category_second_Cbox = Combobox(self.article_frame, state="readonly")
-        self.category_first_Cbox['values'] = []
-        self.category_second_Cbox['values'] = []
+                try:
+                    sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES(%d, %d, %d, '%s', %d)" % (student_code, id_material, int(article[1]), date.today(), 1)
+                    cursor.execute(sql)
 
-        try:
-            sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES(%d, %d, %d, '%s', %d)" % (student_code, id_material, int(article[1]), date.today(), 1)
-            cursor.execute(sql)
+                    sql_stock = "UPDATE Materials SET stock = stock - %d WHERE id_Materials=%d" % (int(article[1]), id_material)
+                    cursor.execute(sql_stock)
 
-            sql_stock = "UPDATE Materials SET stock = stock - %d WHERE id_Materials=%d" % (int(article[1]), id_material)
-            cursor.execute(sql_stock)
-
-        except:
-                tkMessageBox.showerror("Error", "Unexpected error")
-                """
+                except:
+                        tkMessageBox.showerror("Error", "Unexpected error")
 
         self.fill_list_loans()
         self.success()

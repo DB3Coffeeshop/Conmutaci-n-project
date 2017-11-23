@@ -65,13 +65,20 @@ class App(Frame):
 
 
     def fill_table(self):
+        self.tree.delete(*self.tree.get_children())
         sql = "SELECT student_code, material, cant, date FROM Loan"
         list_data = self.db_execute(sql)
 
         for data in list_data:
             self.tree.insert('', 'end', values=[data[0], data[1], data[3], data[2]])
-            
-        
+
+
+    def fill_search(self, list_data):
+        self.tree.delete(*self.tree.get_children())
+
+        for data in list_data:
+            self.tree.insert('', 'end', values=[data[0], data[1], data[3], data[2]])
+
 
       
     def selected_tree(self):
@@ -100,29 +107,46 @@ class App(Frame):
                 
 
     def search(self):
-        first_category = self.category_second_Cbox.get()
-        second_category = self.category_first_Cbox.get()
-
-        sql = "SELECT student_code, material, date, cant FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE student_code=%d AND Materials.category_first='%s' AND Materials.category_second='%s'" % (int(self.student_code_text.get()), first_category, second_category)
-        sql_2 = "SELECT student_code, material, date, cant, FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE Material.category_first='%s' AND Material.category_second='%s'" % (first_category, second_category)
-        sql_3 = "SELECT student_code, material, date, cant, FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE Material.category_first='%s'" % (first_category)
-        sql_4 = "SELECT student_code, material, date, cant, FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE Material.category_second='%s'" % (second_category)
-        sql_5 = "SELECT student_code, material, date, cant FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE student_code=%d" % (int(self.student_code_text.get()))
+        first_category = self.category_first_Cbox.get()
+        second_category = self.category_second_Cbox.get()
         
         if first_category != '' and second_category != '' and self.student_code_text.get() != '':
-            self.db_execute(sql)
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE student_code=%d AND Materials.category_first='%s' AND Materials.category_second='%s'" % (int(self.student_code_text.get()), first_category, second_category)
+            data = self.db_execute(sql)
+            self.fill_search(data)
 
         elif first_category != ''  and second_category != '':
-            self.db_execute(sql_2)
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE Materials.category_first='%s' AND Materials.category_second='%s'" % (first_category, second_category)
+            data = self.db_execute(sql)
+            self.fill_search(data)
+
+        elif first_category != ''  and self.student_code_text.get() != '':
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE student_code=%d AND Materials.category_first='%s'" % (int(self.student_code_text.get()), first_category)
+            data = self.db_execute(sql)
+            self.fill_search(data)
+
+        elif second_category != '' and self.student_code_text.get() != '':
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE student_code=%d AND Materials.category_second='%s'" % (int(self.student_code_text.get()), second_category)
+            data = self.db_execute(sql)
+            self.fill_search(data)
 
         elif first_category != '':
-            self.db_execute(sql_3)
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE Materials.category_first='%s'" % (first_category)
+            data = self.db_execute(sql)
+            self.fill_search(data)
         
-        elif first_category != '':
-            self.db_execute(sql_4)
+        elif second_category != '':
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE Materials.category_second='%s'" % (second_category)
+            data = self.db_execute(sql)
+            self.fill_search(data)
         
+        elif self.student_code_text.get() != '':
+            sql = "SELECT student_code, material, cant, date FROM Loan INNER JOIN Materials ON Loan.material = Materials.id_Materials WHERE student_code=%d" % (int(self.student_code_text.get()))
+            data = self.db_execute(sql)
+            self.fill_search(data)
+
         else:
-            self.db_execute(sql_5)
+            self.fill_table()
 
 
     def db_execute(self,texts):
