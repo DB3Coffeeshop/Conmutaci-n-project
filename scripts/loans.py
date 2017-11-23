@@ -118,6 +118,10 @@ class Register:
             db = self.connect_database()
             cursor = db.cursor()
             sql = "SELECT * FROM Students WHERE card_code=%s" % (str(card))
+<<<<<<< HEAD
+=======
+            sql = "SELECT * FROM Students WHERE card_code='%s'" % (card)
+>>>>>>> 6968038b42f413f64fae6ed60a874a1735cb6f2e
             cursor.execute(sql)
 
             try:
@@ -147,7 +151,7 @@ class Register:
 
 
     def connect_database(self):
-        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans")
+        data_base = MySQLdb.connect("LocalHost", "root", "mysql", "Eafit_Loans")
         data_base.autocommit(True)
         cursor = data_base.cursor()
         return data_base

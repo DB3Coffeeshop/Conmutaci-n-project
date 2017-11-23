@@ -1,6 +1,6 @@
 from Tkinter import *
-from loans import Register
 from PIL import Image, ImageTk
+#from loans import Register
 import tkMessageBox
 
 

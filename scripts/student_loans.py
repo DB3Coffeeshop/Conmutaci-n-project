@@ -24,20 +24,20 @@ class Loans:
     def configure(self):
         self.master.title("Loans")
         self.head = StringVar()
-        title = Label(self.master, textvariable=self.head, bg='#dbe0df', font=("Cursive", 19))
+        title = Label(self.master, textvariable=self.head, bg='#17202a', font=("Cursive", 19))
         self.head.set("%s %s" % (self.student.name, self.student.last_name))
         title.pack()
         self.article_frame.pack(side=RIGHT, padx=30)
         self.loans_frame.pack(side=LEFT, padx=30)
         self.master.geometry("900x500")
         self.master.resizable(0,0)
-        self.loans_frame.configure(background='#dbe0df')
-        self.master.configure(background='#dbe0df')
-        self.article_frame.configure(background='#dbe0df')
+        self.loans_frame.configure(background='#17202a')
+        self.master.configure(background='#17202a')
+        self.article_frame.configure(background='#17202a')
 
 
     def connect(self):
-        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans")
+        data_base = MySQLdb.connect("LocalHost", "root", "mysql", "Eafit_Loans")
         data_base.autocommit(True)
         return data_base
 
@@ -50,9 +50,9 @@ class Loans:
     def make_list_articles(self):
         self.list = Listbox(self.article_frame, selectborderwidth=5)
 
-        title = Label(self.article_frame, text="Articles", bg='#dbe0df')
-        self.btn_add = Button(self.article_frame, text="Add", highlightbackground='#dbe0df', command=self.add_button)
-        lbl_quantity = Label(self.article_frame, text="quantity", font=("Cursive", 10), bg='#dbe0df')
+        title = Label(self.article_frame, text="Articles", bg='#17202a')
+        self.btn_add = Button(self.article_frame, text="Add", highlightbackground='#17202a', command=self.add_button)
+        lbl_quantity = Label(self.article_frame, text="quantity", font=("Cursive", 10), bg='#17202a')
         self.txt_quantity = Entry(self.article_frame, bd=5, text="Quantity here")
 
         self.btn_add.pack(side=BOTTOM)
@@ -79,12 +79,12 @@ class Loans:
         self.list_loans.pack(side=LEFT, padx=30)
         self.list_new_loans.pack(side=RIGHT, padx=30, pady=30)
 
-        self.btn_accept = Button(self.master, text="Accept", highlightbackground='#dbe0df', width=10, command=self.accept_button)
-        self.btn_cancel = Button(self.master, text="Cancel", highlightbackground='#dbe0df', width=10, command=self.cancel_button)
-        btn_exit = Button(self.master, text="exit", highlightbackground='#dbe0df', width=10, command=self.go_back)
+        self.btn_accept = Button(self.master, text="Accept", highlightbackground='#17202a', width=10, command=self.accept_button)
+        self.btn_cancel = Button(self.master, text="Cancel", highlightbackground='#17202a', width=10, command=self.cancel_button)
+        btn_exit = Button(self.master, text="exit", highlightbackground='#17202a', width=10, command=self.go_back)
 
-        lbl_current_loans = Label(self.master, text="Student Loans", bg='#dbe0df')
-        lbl_loans = Label(self.master, text="Current loans", bg='#dbe0df')
+        lbl_current_loans = Label(self.master, text="Student Loans", bg='#17202a')
+        lbl_loans = Label(self.master, text="Current loans", bg='#17202a')
 
         lbl_current_loans.place(relx=0.12, rely=0.2)
         lbl_loans.place(relx=0.41, rely=0.2)
@@ -140,15 +140,22 @@ class Loans:
                 cursor.execute(sql_article)
                 id_material = cursor.fetchall()[0][0]
 
-                try:
-                    sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES(%d, %d, %d, '%s', %d)" % (student_code, id_material, int(article[1]), date.today(), 1)
-                    cursor.execute(sql)
+    def combobox(self):
+        #ComboBox
+        self.category_first_Cbox = Combobox(self.article_frame, state="readonly")
+        self.category_second_Cbox = Combobox(self.article_frame, state="readonly")
+        self.category_first_Cbox['values'] = []
+        self.category_second_Cbox['values'] = []
 
-                    sql_stock = "UPDATE Materials SET stock = stock - %d WHERE id_Materials=%d" % (int(article[1]), id_material)
-                    cursor.execute(sql_stock)
+        try:
+            sql = "INSERT INTO Loan(student_code, material, cant, date, status) VALUES(%d, %d, %d, '%s', %d)" % (student_code, id_material, int(article[1]), date.today(), 1)
+            cursor.execute(sql)
 
-                except:
-                    tkMessageBox.showerror("Error", "Unexpected error")
+            sql_stock = "UPDATE Materials SET stock = stock - %d WHERE id_Materials=%d" % (int(article[1]), id_material)
+            cursor.execute(sql_stock)
+
+        except:
+                tkMessageBox.showerror("Error", "Unexpected error")
 
         self.fill_list_loans()
         self.success()
