@@ -12,6 +12,7 @@ class App(Frame):
         self.master = master
         self.conectar()
         self.make_frame()
+        self.fill_table()
         self.student_code_text = Entry(self.master)
         self.student_code_text.place(relx=0.5,rely=0.2)
         
@@ -40,17 +41,13 @@ class App(Frame):
 
         #TREEVIEW
         self.grid()
-        self.tree = self.tree = Treeview(self,columns=('Code Student','Material','Date','Return'),show="headings",selectmode='browse')
+        self.tree = self.tree = Treeview(self,columns=('Code Student','Material','Date','cant'),show="headings",selectmode='browse')
         self.tree.heading("Code Student", text="Code Student")
 #        tree.column('Code Studen',anchor='center',width=30)
         self.tree.heading("Material", text="Material")
         self.tree.heading("Date",text="Date")
-        self.tree.heading("Return",text="Return")
+        self.tree.heading("cant",text="cant")
         self.tree.grid(padx = 5,pady=110)
-
-        self.tree.insert('','end',values = ['0353','567','adwa','adwad'])
-        #self.tree.insert(i,'end',values = ['0353','567','adwa','adwad'])
-
 
         #Pociciones
         title.place(relx=0.01,rely=0.01)
@@ -66,6 +63,16 @@ class App(Frame):
         button_back.place(relx=0.85, rely=0.065)
         button_exit.place(relx=0.85, rely=0.15)
 
+
+    def fill_table(self):
+        sql = "SELECT student_code, material, cant, date FROM Loan"
+        list_data = self.db_execute(sql)
+
+        for data in list_data:
+            self.tree.insert('', 'end', values=[data[0], data[1], data[3], data[2]])
+            
+        
+
       
     def selected_tree(self):
         try:
@@ -79,8 +86,8 @@ class App(Frame):
         table_name="Materials"
         scrip="Select DISTINCT "+ requisito + " From "+ table_name
         table=self.db_execute(scrip)
-        print self.category_first_Cbox['values']
-        print table[0]
+        #print self.category_first_Cbox['values']
+        #print table[0]
         if num_cbox ==1 :
             self.category_first_Cbox['values'] = ['']
             for i in range(len(table)):
@@ -90,42 +97,43 @@ class App(Frame):
             for i in range(len(table)):
                 values = list(self.category_second_Cbox["values"])
                 self.category_second_Cbox['values']= values + [table[i][0]]
-
-    def refill_tree(self,list_arr):
-        #list_arr=        
-        self.tree.delete(*tree.get_children())
-        self.tree.insert('','end',values = ['0353','567','adwa','adwad'])
-        pass
-
+                
 
     def search(self):
-        item=self.category_second_Cbox.get()
-        student_code=self.student_code_text.get()
-        print student_code
-        print item
-        table_name="Prestamos"
-        scrip="SELECT * FROM " + str(table_name) 
-        if item != "":
-            if student_code != "":
-                scrip= scrip+ "Where Student_code == " + student_code 
-                scrip=scrip + " "
-            #else:
-                #Perdir solo por item
-                pass
+        first_category = self.category_second_Cbox.get()
+        second_category = self.category_first_Cbox.get()
+
+        sql = "SELECT student_code, material, date, cant FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE student_code=%d AND Materials.category_first='%s' AND Materials.category_second='%s'" % (int(self.student_code_text.get()), first_category, second_category)
+        sql_2 = "SELECT student_code, material, date, cant, FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE Material.category_first='%s' AND Material.category_second='%s'" % (first_category, second_category)
+        sql_3 = "SELECT student_code, material, date, cant, FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE Material.category_first='%s'" % (first_category)
+        sql_4 = "SELECT student_code, material, date, cant, FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE Material.category_second='%s'" % (second_category)
+        sql_5 = "SELECT student_code, material, date, cant FROM Loan INNER JOIN Materials ON Loan.material = Material.id_Materials WHERE student_code=%d" % (int(self.student_code_text.get()))
+        
+        if first_category != '' and second_category != '' and self.student_code_text.get() != '':
+            self.db_execute(sql)
+
+        elif first_category != ''  and second_category != '':
+            self.db_execute(sql_2)
+
+        elif first_category != '':
+            self.db_execute(sql_3)
+        
+        elif first_category != '':
+            self.db_execute(sql_4)
+        
         else:
-            if student_code != "": 
-                #pedir por codigo          
-            #else:
-                tkMessageBox.showinfo("Error", "Select one")
-                pass
+            self.db_execute(sql_5)
+
 
     def db_execute(self,texts):
         self.cur.execute(texts)
         return self.cur.fetchall()
             
     def conectar(self):
-        self.db = MySQLdb.connect("LocalHost", "root", "mysql", "Eafit_Loans") #Ignoren la contra, no supe como cambiarla
+        self.db = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans") #Ignoren la contra, no supe como cambiarla
+        self.db.autocommit(True)
         self.cur = self.db.cursor()
+
 
     def cleartext(self,tex):
         texto=str(tex)
@@ -133,7 +141,6 @@ class App(Frame):
         texto.replace(')','')
         texto.replace(',','')
         return texto
-
     def exit(self):
         answer = tkMessageBox.askquestion("Exit", "Are you sure?")
         if answer == 'yes':

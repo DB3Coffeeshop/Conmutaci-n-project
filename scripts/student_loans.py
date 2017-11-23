@@ -37,7 +37,7 @@ class Loans:
 
 
     def connect(self):
-        data_base = MySQLdb.connect("LocalHost", "root", "mysql", "Eafit_Loans")
+        data_base = MySQLdb.connect("LocalHost", "root", "natalia1", "Eafit_Loans")
         data_base.autocommit(True)
         return data_base
 
@@ -140,6 +140,7 @@ class Loans:
                 cursor.execute(sql_article)
                 id_material = cursor.fetchall()[0][0]
 
+    """
     def combobox(self):
         #ComboBox
         self.category_first_Cbox = Combobox(self.article_frame, state="readonly")
@@ -156,6 +157,7 @@ class Loans:
 
         except:
                 tkMessageBox.showerror("Error", "Unexpected error")
+                """
 
         self.fill_list_loans()
         self.success()
